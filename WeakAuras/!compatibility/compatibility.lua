@@ -234,6 +234,11 @@ function GetSpellBookID(spellID, booktype)
 	end
 end
 
+function IsSpellKnown(spellID, isPetSpell)
+	local book_id = GetSpellBookID(spellID, isPetSpell and BOOKTYPE_PET or BOOKTYPE_SPELL)
+	return book_id ~= nil
+end
+
 function PrintTab(obj, max_depth, level, meta_level)
 	if not obj or obj == "" then
 		print('Root = nil')

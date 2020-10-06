@@ -992,7 +992,9 @@ do
         end
         cdReadyFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
         cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
-        gcdReference = id;
+				if IsSpellKnown(id) then
+					gcdReference = id;
+				end
     end
 
     function WeakAuras.WatchRuneCooldown(id)

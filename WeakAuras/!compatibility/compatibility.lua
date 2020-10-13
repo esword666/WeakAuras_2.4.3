@@ -117,9 +117,6 @@ function UnitAura(unit, indexOrName, rank, filter)
 	end
 	--]]
 	
-  local newrank = (rank and rank:gsub("|HELPFUL", ""):gsub("HELPFUL|", ""):gsub("HELPFUL", ""):gsub("|HARMFUL", ""):gsub("HARMFUL|", ""):gsub("HARMFUL", "")) or nil;
-  local newfilter = (filter and filter:gsub("|HELPFUL", ""):gsub("HELPFUL|", ""):gsub("HELPFUL", ""):gsub("|HARMFUL", ""):gsub("HARMFUL|", ""):gsub("HARMFUL", "")) or nil;
-	
   if ((filter and filter:find("HARMFUL")) or ((rank and rank:find("HARMFUL")) and filter == nil)) then
     debuffType = "HARMFUL";
 		elseif ((filter and filter:find("HELPFUL")) or ((rank and rank:find("HARMFUL")) and filter == nil)) then
@@ -131,26 +128,28 @@ function UnitAura(unit, indexOrName, rank, filter)
   local x;
 	
   if (debuffType == "HELPFUL" or debuffType == nil) then
-    local name, r, icon, count, duration, expirationTime = UnitBuff(unit, 1, newfilter);
+		local castable = filter and filter:find("PLAYER") and 1 or nil;
+    local name, r, icon, count, duration, expirationTime = UnitBuff(unit, 1, castable);
     x = 1;
     while (name ~= nil) do
       if (name == indexOrName and (rank == nil or rank:find("HARMFUL") or rank:find("HELPFUL") or rank == r)) then
-        return name, r, icon, count, debuffType, duration, GetTime() + (expirationTime or 0)
+        return name, r, icon, count, debuffType, duration, GetTime() + (expirationTime or 0), (castable and "player")
 			end
       x = x + 1;
-      name, r, icon, count, duration, expirationTime = UnitBuff(unit, x, newfilter);
+      name, r, icon, count, duration, expirationTime = UnitBuff(unit, x, castable);
 		end
 	end
 	
   if (debuffType == "HARMFUL" or debuffType == nil) then
-    local name, r, icon, count, dispelType, duration, expirationTime = UnitDebuff(unit, 1, newfilter);
+		local removable = nil
+    local name, r, icon, count, dispelType, duration, expirationTime = UnitDebuff(unit, 1, removable);
     x = 1;
     while (name ~= nil) do
       if (name == indexOrName and (rank == nil or rank:find("HARMFUL") or rank:find("HELPFUL") or rank == r)) then
         return name, r, icon, count, debuffType, duration, GetTime() + (expirationTime or 0)
 			end
       x = x + 1;
-      name, r, icon, count, dispelType, duration, expirationTime = UnitDebuff(unit, x, newfilter);
+      name, r, icon, count, dispelType, duration, expirationTime = UnitDebuff(unit, x, removable);
 		end
 	end
 	

@@ -2618,6 +2618,9 @@ function WeakAuras.ScanAuras(unit)
 							if unit == "player" or not name then
 								name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitAura(unit, checkname, nil, filter);
 								fallback = true
+								if data.ownOnly == false then
+									_,_,_,_,_,_,_,unitCaster = UnitAura(unit, checkname, nil, (filter.."|PLAYER"));
+								end
 							else
 								if not remaining then
 									expirationTime = time

@@ -126,13 +126,17 @@ function UnitAura(unit, indexOrName, rank, filter)
 	end
   
   local x;
+	if(type(indexOrName) == "number") then
+		x = indexOrName
+	else
+		x = 1
+	end
 	
   if (debuffType == "HELPFUL" or debuffType == nil) then
 		local castable = filter and filter:find("PLAYER") and 1 or nil;
-    local name, r, icon, count, duration, expirationTime = UnitBuff(unit, 1, castable);
-    x = 1;
+    local name, r, icon, count, duration, expirationTime = UnitBuff(unit, x, castable);
     while (name ~= nil) do
-      if (name == indexOrName and (rank == nil or rank:find("HARMFUL") or rank:find("HELPFUL") or rank == r)) then
+      if ((name == indexOrName or x == indexOrName) and (rank == nil or rank:find("HARMFUL") or rank:find("HELPFUL") or rank == r)) then
         return name, r, icon, count, debuffType, duration, GetTime() + (expirationTime or 0), (castable and "player")
 			end
       x = x + 1;
@@ -143,9 +147,13 @@ function UnitAura(unit, indexOrName, rank, filter)
   if (debuffType == "HARMFUL" or debuffType == nil) then
 		local removable = nil
     local name, r, icon, count, dispelType, duration, expirationTime = UnitDebuff(unit, 1, removable);
-    x = 1;
+		if(type(indexOrName) == "number") then
+			x = indexOrName
+		else
+			x = 1
+		end
     while (name ~= nil) do
-      if (name == indexOrName and (rank == nil or rank:find("HARMFUL") or rank:find("HELPFUL") or rank == r)) then
+      if ((name == indexOrName or x == indexOrName) and (rank == nil or rank:find("HARMFUL") or rank:find("HELPFUL") or rank == r)) then
         return name, r, icon, count, debuffType, duration, GetTime() + (expirationTime or 0)
 			end
       x = x + 1;

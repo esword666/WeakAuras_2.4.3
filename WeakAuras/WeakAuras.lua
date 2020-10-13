@@ -2565,7 +2565,7 @@ function WeakAuras.ScanAuras(unit)
                             if (data.subcount) then
                                 count = tooltipSize;
                             end
-                            if (name and ((not data.count) or data.count(count)) and (data.ownOnly ~= false or not UnitIsUnit("player", unitCaster)) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
+                            if (name and ((not data.count) or data.count(count)) and (data.ownOnly == nil or data.ownOnly == (unitCaster=="player")) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
                                 -- Show display and handle clones
                                 db.tempIconCache[name] = icon;
                                 if (data.autoclone) then

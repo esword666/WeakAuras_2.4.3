@@ -4954,6 +4954,7 @@ end
 
 function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
     local tooltip = WeakAuras.GetHiddenTooltip();
+		tooltip:ClearLines()
     tooltip:SetUnitAura(unit, index, filter);
     local lines = { tooltip:GetRegions() };
     local tooltipText = lines[12] and lines[12]:GetObjectType() == "FontString" and lines[12]:GetText() or "";

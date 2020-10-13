@@ -219,12 +219,11 @@ function IsSpellInRange(spell, booktype, unit)
 	end
 end
 
-hooks.CreateFrame = CreateFrame
-function CreateFrame(frameType, name, parent, template)
-	local f = hooks.CreateFrame(frameType, name, parent, template)
+hooksecurefunc("CreateFrame", function(frameType, name, parent, template)
 	if template == "GameTooltipTemplate" then
+		local f = getglobal(name)
 		f.SetUnitAura = function(self, unit, index, filter)
-			if filter:match("HARMFUL") then
+			if filter and filter:match("HARMFUL") then
 				self:SetUnitDebuff(unit, index, filter)
 			else
 				self:SetUnitBuff(unit, index, filter)
@@ -232,7 +231,7 @@ function CreateFrame(frameType, name, parent, template)
 		end
 	end
 	return f
-end
+end)
 
 function GetSpellBookID(spellID, booktype)
 	booktype = booktype or BOOKTYPE_SPELL

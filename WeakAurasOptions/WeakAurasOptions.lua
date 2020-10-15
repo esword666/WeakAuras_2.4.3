@@ -3837,6 +3837,19 @@ function WeakAuras.ReloadTriggerOptions(data)
       return "";
     end
   end
+
+	local function getUniqueAuraMatches(names)
+		local icons = {}
+		for i,name in ipairs(names) do
+			local ids = idCache[name]
+			for id,_ in pairs(ids) do
+				local _,_,icon = GetSpellInfo(id)
+				local iconString = "|T"..icon..":0|t: "..tostring(icon:match("\\([^\\]+)$"))
+				icons[icon] = iconString
+			end
+		end
+		return icons
+	end
   
   local aura_options = {
     fullscan = {
@@ -4346,6 +4359,45 @@ function WeakAuras.ReloadTriggerOptions(data)
         WeakAuras.UpdateDisplayButton(data);
       end,
     },
+    use_icon = {
+      type = "toggle",
+      name = L["Icon"],
+			width = "half",
+      order = 37,
+      hidden = function() return not (trigger.type == "aura"); end,
+    },
+		use_icon_space = {
+			type = "execute",
+			name = "",
+			width = "half",
+			image = function() return "", 0, 0 end,
+			order = 37.3,
+			hidden = function() return trigger.use_icon and trigger.icon end,
+		},
+		sample_icon = {
+      type = "execute",
+      name = "",
+      desc = function() return tostring(trigger.icon) end,
+      width = "half",
+      image = function() return tostring(trigger.icon), 18, 18 end,
+      order = 37.5,
+      hidden = function() return not trigger.use_icon or not trigger.icon end,
+    },
+		icon = {
+			type = "select",
+			name = L["Icon"],
+			order = 38,
+			disabled = function() return not trigger.use_icon end,
+			values = function() return getUniqueAuraMatches(trigger.names) end,
+      hidden = function() return not (trigger.type == "aura"); end,
+      set = function(info, v)
+        trigger.icon = v;
+        WeakAuras.Add(data);
+      end,
+      get = function()
+        return trigger.icon;
+      end
+		},
     useUnit = {
       type = "toggle",
       name = L["Unit"],

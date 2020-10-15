@@ -2565,7 +2565,13 @@ function WeakAuras.ScanAuras(unit)
                             if (data.subcount) then
                                 count = tooltipSize;
                             end
-                            if (name and ((not data.count) or data.count(count)) and (data.ownOnly == nil or data.ownOnly == (unitCaster=="player")) and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)) then
+                            if (
+															name
+															and ((not data.count) or data.count(count))
+															and ((not data.use_icon) or data.icon == icon)
+															and (data.ownOnly == nil or data.ownOnly == (unitCaster=="player"))
+															and data.scanFunc(name, tooltip, isStealable, spellId, debuffClass)
+															) then
                                 -- Show display and handle clones
                                 db.tempIconCache[name] = icon;
                                 if (data.autoclone) then
@@ -2634,23 +2640,28 @@ function WeakAuras.ScanAuras(unit)
                             checkPassed = false;
 
                             -- Aura conforms to trigger options?
-                            if (name and ((not data.count) or data.count(count)) and (data.ownOnly == nil or data.ownOnly == (unitCaster=="player"))) then
-								if fallback then
-									remaining = expirationTime - time;
-								end
+														if (
+															name
+															and ((not data.count) or data.count(count))
+															and ((not data.use_icon) or data.icon == icon)
+															and (data.ownOnly == nil or data.ownOnly == (unitCaster=="player"))
+															) then
+															if fallback then
+																remaining = expirationTime - time;
+															end
 
-                                checkPassed = true;
-                                if (data.remFunc) then
-                                    if not (data.remFunc(remaining)) then
-                                        checkPassed = false;
-                                    end
+															checkPassed = true;
+															if (data.remFunc) then
+																if not (data.remFunc(remaining)) then
+																	checkPassed = false;
+																end
 
-                                    -- Shedule remaining time re-scan later
-                                    if (data.rem and remaining > data.rem) then -- Obszczy: added data.rem check cuz it was shitting "comparing with nil", dunno which one is nil
-                                        WeakAuras.ScheduleAuraScan(unit, time + (remaining - data.rem));
-                                    end
-                                end
-                            end
+																-- Shedule remaining time re-scan later
+																if (data.rem and remaining > data.rem) then -- Obszczy: added data.rem check cuz it was shitting "comparing with nil", dunno which one is nil
+																	WeakAuras.ScheduleAuraScan(unit, time + (remaining - data.rem));
+																end
+															end
+														end
 
                             local casGUID = unitCaster and UnitGUID(unitCaster);
 
@@ -3610,7 +3621,8 @@ function WeakAuras.pAdd(data)
                         bar = data.bar,
                         timer = data.timer,
                         cooldown = data.cooldown,
-                        icon = data.icon,
+												use_icon = trigger.use_icon,
+                        icon = (trigger.use_icon and trigger.icon) or data.icon,
                         debuffType = trigger.debuffType,
                         names = trigger.names,
                         name = trigger.name,

@@ -987,14 +987,27 @@ do
     end
 
     function WeakAuras.WatchGCD(id)
-        if not (cdReadyFrame) then
-            WeakAuras.InitCooldownReady();
-        end
-        cdReadyFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-        cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
+			if not (cdReadyFrame) then
+				WeakAuras.InitCooldownReady();
+			end
+			cdReadyFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+			cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
+
+			if GetSpellLink(1, BOOKTYPE_SPELL) then
+				--Spellbook has been loaded
 				if IsSpellKnown(id) then
 					gcdReference = id;
 				end
+			else
+				--Spellbook has NOT been loaded
+				cdReadyFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+				cdReadyFrame:HookScript("OnEvent", function(self, event)
+					if event=="PLAYER_ENTERING_WORLD" then
+						WeakAuras.WatchGCD(id)
+						cdReadyFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+					end
+				end)
+			end
     end
 
     function WeakAuras.WatchRuneCooldown(id)

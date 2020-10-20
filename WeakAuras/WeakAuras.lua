@@ -986,29 +986,33 @@ do
         end
     end
 
-    function WeakAuras.WatchGCD(id)
-			if not (cdReadyFrame) then
-				WeakAuras.InitCooldownReady();
-			end
-			cdReadyFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
-			cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
+		do
+			local spellbookLoaded = nil
 
-			if GetSpellLink(1, BOOKTYPE_SPELL) then
-				--Spellbook has been loaded
-				if IsSpellKnown(id) then
-					gcdReference = id;
+			function WeakAuras.WatchGCD(id)
+				if not (cdReadyFrame) then
+					WeakAuras.InitCooldownReady();
 				end
-			else
-				--Spellbook has NOT been loaded
-				cdReadyFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-				cdReadyFrame:HookScript("OnEvent", function(self, event)
-					if event=="PLAYER_ENTERING_WORLD" then
-						WeakAuras.WatchGCD(id)
-						cdReadyFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+				cdReadyFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+				cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
+
+				if not spellbookLoaded then
+					cdReadyFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+					cdReadyFrame:HookScript("OnEvent", function(self, event)
+						if event=="PLAYER_ENTERING_WORLD" then
+							WeakAuras.WatchGCD(id)
+							cdReadyFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+							spellbookLoaded = true
+						end
+					end)
+				else
+					--Spellbook has been loaded
+					if IsSpellKnown(id) then
+						gcdReference = id;
 					end
-				end)
+				end
 			end
-    end
+		end
 
     function WeakAuras.WatchRuneCooldown(id)
         if not (cdReadyFrame) then

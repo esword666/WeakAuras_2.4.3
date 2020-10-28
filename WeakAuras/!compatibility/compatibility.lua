@@ -134,13 +134,20 @@ function UnitAura(unit, indexOrName, rank, filter)
 	
   if (debuffType == "HELPFUL" or debuffType == nil) then
 		local castable = filter and filter:find("PLAYER") and 1 or nil;
-    local name, r, icon, count, duration, expirationTime = UnitBuff(unit, x, castable);
+    local name, r, icon, count, duration, remaining = UnitBuff(unit, x, castable);
     while (name ~= nil) do
       if ((name == indexOrName or x == indexOrName) and (rank == nil or rank:find("HARMFUL") or rank:find("HELPFUL") or rank == r)) then
-        return name, r, icon, count, debuffType, duration, GetTime() + (expirationTime or 0), (castable and "player")
+				-- Due to a Blizzard bug, having two of the same weapon
+				-- proc will return nil for the duration of the second proc.
+				-- Crusader (Holy Strength), Mongoose (Lightning Speed),
+				-- and Executioner all last 15 seconds.
+				duration = duration or 15
+				remaining = remaining or GetPlayerBuffTimeLeft(x)
+
+        return name, r, icon, count, debuffType, duration, GetTime() + (remaining or 0), (castable and "player")
 			end
       x = x + 1;
-      name, r, icon, count, duration, expirationTime = UnitBuff(unit, x, castable);
+      name, r, icon, count, duration, remaining = UnitBuff(unit, x, castable);
 		end
 	end
 	

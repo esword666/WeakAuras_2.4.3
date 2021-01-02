@@ -204,6 +204,8 @@ function GetSpellCooldown(spell, booktype)
 		return hooks.GetSpellCooldown(spell, booktype) -- вызываем оригинал
 	else
 		spell = SpellID_to_SpellName(spell)
+		-- Add parentheses to the end of spell names like "Faerie Fire (Feral)"
+		spell = (string.gsub(spell, "%)$",")()"))
 		return hooks.GetSpellCooldown(spell) -- вызываем оригинал
 	end
 end

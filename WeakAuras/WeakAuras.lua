@@ -639,6 +639,14 @@ do
             else
                 return 0, math.huge, name, icon;
             end
+        elseif(hand == "ranged") then
+            local itemId = GetInventoryItemLink("player", ranged);
+            local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
+            if (lastSwingRange) then
+                return swingDurationRange, lastSwingRange + swingDurationRange, name, icon;
+            else
+                return 0, math.huge, name, icon;
+            end
         end
 
         return 0, math.huge;

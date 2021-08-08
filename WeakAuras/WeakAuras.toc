@@ -1,4 +1,4 @@
-﻿## Interface: 30300
+﻿## Interface: 20400
 ## Title: WeakAuras 2
 ## Author: Mirrored, 3.3.5-downport & button glow by  Shinizu @ Dalaran-WoW / Warmane
 ## Version: 2.0.8

@@ -1,4 +1,4 @@
-﻿## Interface: 30300
+﻿## Interface: 20400
 ## Title: WeakAuras Options
 ## Author: Mirrored
 ## Version: 2.0.8

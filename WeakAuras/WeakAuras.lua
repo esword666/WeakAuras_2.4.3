@@ -616,6 +616,7 @@ end);
 do
     local mh = GetInventorySlotInfo("MainHandSlot")
     local oh = GetInventorySlotInfo("SecondaryHandSlot")
+    local ranged = GetInventorySlotInfo("RangedSlot")
 
     local swingTimerFrame;
     local lastSwingMain, lastSwingOff, lastSwingRange;
